@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Chat</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        #chat-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: #f8f9fa;
+        }
+        #chat-input {
+            padding: 1rem;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+        }
+        .message {
+            margin-bottom: 1rem;
+        }
+        .message .card {
+            max-width: 70%;
+        }
+        .message.user .card {
+            margin-left: auto;
+            background-color: #007bff;
+            color: white;
+        }
+        .message.other .card {
+            margin-right: auto;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <!-- Área de mensagens -->
+    <div id="chat-log" class="container-fluid"></div>
+
+    <!-- Campo de entrada de mensagem -->
+    <div id="chat-input" class="container-fluid">
+        <div class="input-group">
+            <input id="chat-message-input" type="text" class="form-control" placeholder="Digite sua mensagem...">
+            <button id="chat-message-submit" class="btn btn-primary">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS e dependências -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- Script do WebSocket -->
+    <script>
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/'
+        );
+
+        // Função para adicionar uma mensagem ao chat
+        function addMessage(message, isUser) {
+            const chatLog = document.querySelector('#chat-log');
+            const messageClass = isUser ? 'user' : 'other';
+            const messageElement = `
+                <div class="message ${messageClass}">
+                    <div class="card">
+                        <div class="card-body">
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+            `;
+            chatLog.innerHTML += messageElement;
+            chatLog.scrollTop = chatLog.scrollHeight;  // Rolagem automática para a última mensagem
+        }
+
+        // Recebe mensagens do servidor
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            addMessage(data.message, false);  // Mensagens recebidas são de outros usuários
+        };
+
+        // Envia mensagens para o servidor
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // Enter
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInput = document.querySelector('#chat-message-input');
+            const message = messageInput.value;
+            if (message.trim()) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                addMessage(message, true);  // Mensagens enviadas são do usuário atual
+                messageInput.value = '';
+            }
+        };
+
+        // Trata o fechamento da conexão
+        chatSocket.onclose = function(e) {
+            console.error('Conexão fechada');
+        };
+    </script>
+</body>
+</html>
