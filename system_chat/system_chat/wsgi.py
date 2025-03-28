@@ -1,5 +1,5 @@
 """
-WSGI config for wechatpp project.
+WSGI config for system_chat project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wechatpp.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'system_chat.settings')
 
 application = get_wsgi_application()
