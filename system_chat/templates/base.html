@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="pt-br">
+    <head>
+    <!-- Ico -->
+    {% load static %}
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    
     <!-- Meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -136,13 +140,14 @@
         }
     </style>
     
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}
+    {% endblock %}
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="/rooms/">
                 <i class="bi bi-chat-dots"></i> ChatApp
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
