@@ -1,1 +1,1 @@
-web: gunicorn system_chat.wsgi
+web: daphne -b 0.0.0.0 -p $PORT system_chat.asgi:application
