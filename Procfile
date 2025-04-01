@@ -1,1 +1,2 @@
-web: daphne -b 0.0.0.0 -p $PORT system_chat.asgi:application
+web: daphne system_chat.asgi:application --port $PORT --bind 0.0.0.0
+worker: python manage.py runworker
