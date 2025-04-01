@@ -17,18 +17,19 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'djangochat-production.up.railway.app
 
 CSRF_TRUSTED_ORIGINS = ['https://djangochat-production.up.railway.app']
 
+
 # Application definition
 
 INSTALLED_APPS = [
     'daphne',
     'channels',
+    'chatapp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chatapp',
 ]
 
 ASGI_APPLICATION = 'system_chat.asgi.application' 
