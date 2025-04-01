@@ -13,7 +13,9 @@ SECRET_KEY = 'django-insecure-$!(z0fy)6hkx@q9q7u!zvu%3k+3tw=ogfdoptv%3ic&=j!x+*5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'djangochat-production.up.railway.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'djangochat-production.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = ['https://djangochat-production.up.railway.app']
 
 # Application definition
 
