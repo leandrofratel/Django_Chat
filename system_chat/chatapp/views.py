@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
 from .models import Room, Message
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 def register(request):
+    """ Realiza o registro do usuario caso ele não tenha conta de login. """
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -17,6 +17,7 @@ def register(request):
     return render(request, "registration/register.html", {"form": form})
 
 def rooms(request):
+    """ Lista todas as salas disponíveis para os usuários logados. """
     if not request.user.is_authenticated:
         return redirect("login")  # Redireciona para login se não estiver autenticado
     
@@ -24,6 +25,7 @@ def rooms(request):
     return render(request, "rooms.html", {"rooms": rooms})
 
 def room(request, slug):
+    """ Redireciona o user para a sala específica de chat. """
     if not request.user.is_authenticated:
         return redirect("login")
 
@@ -33,6 +35,7 @@ def room(request, slug):
     return render(request, "room.html", {"room_name": room_name, "slug": slug, "messages": messages})
 
 def custom_login(request):
+    """Verifica se o usuário está logado para redireciona-lo ao chat."""
     if request.user.is_authenticated:
         return redirect("rooms")  # Se o usuário já estiver logado, vá para a lista de salas
 
