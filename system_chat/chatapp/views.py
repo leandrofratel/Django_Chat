@@ -3,6 +3,34 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
+from django.contrib.auth.decorators import login_required
+from .forms import RoomForm
+from django.utils.text import slugify
+
+@login_required
+def create_room(request):
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            room = form.save(commit=False)
+            base_slug = slugify(room.name)
+            slug = base_slug
+            counter = 1
+            
+            # Garante que o slug é único
+            while Room.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            room.slug = slug
+            room.save()
+            return redirect('rooms')
+    else:
+        form = RoomForm()
+    
+    return render(request, 'chatapp/create_room.html', {'form': form})
+
+
 def register(request):
     """ Realiza o registro do usuario caso ele não tenha conta de login. """
     if request.method == "POST":
@@ -32,10 +60,14 @@ def room(request, slug):
     room_name = Room.objects.get(slug=slug).name
     messages = Message.objects.filter(room=Room.objects.get(slug=slug))
     
-    return render(request, "room.html", {"room_name": room_name, "slug": slug, "messages": messages})
+    return render(request, "room.html", {
+        "room_name": room_name,
+        "slug": slug,
+        "messages": messages
+    })
 
 def custom_login(request):
-    """Verifica se o usuário está logado para redireciona-lo ao chat."""
+    """ Verifica se o usuário está logado para redireciona-lo ao chat."""
     if request.user.is_authenticated:
         return redirect("rooms")  # Se o usuário já estiver logado, vá para a lista de salas
 
